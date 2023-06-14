@@ -8,12 +8,13 @@
 // Execute `rustlings hint threads1` or use the `hint` watch subcommand for a
 // hint.
 
-// I AM NOT DONE
+// I AM DONE
 
 use std::thread;
 use std::time::{Duration, Instant};
 
 fn main() {
+    let start_all = Instant::now();
     let mut handles = vec![];
     for i in 0..10 {
         handles.push(thread::spawn(move || {
@@ -26,7 +27,10 @@ fn main() {
 
     let mut results: Vec<u128> = vec![];
     for handle in handles {
-        // TODO: a struct is returned from thread::spawn, can you use it?
+        match handle.join() {
+            Ok(result) => results.push(result),
+            Err(_) => panic!("A thread panicked")
+        }
     }
 
     if results.len() != 10 {
@@ -37,4 +41,5 @@ fn main() {
     for (i, result) in results.into_iter().enumerate() {
         println!("thread {} took {}ms", i, result);
     }
+    println!("The whole process took {}ms", start_all.elapsed().as_millis())
 }
