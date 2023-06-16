@@ -40,10 +40,16 @@ impl Default for Person {
 // If while parsing the age, something goes wrong, then return the default of
 // Person Otherwise, then return an instantiated Person object with the results
 
-// I AM NOT DONE
-
+// I AM DONE
+use std::ops::Not;
 impl From<&str> for Person {
     fn from(s: &str) -> Person {
+        s.split_once(",").and_then(|(p1, p2)| {
+            p1.is_empty().not().then_some(p1.to_string())
+                .zip(p2.parse::<usize>().ok())
+        }).map(|(name,age)| Person { name, age })
+        .unwrap_or_default()
+            
     }
 }
 
